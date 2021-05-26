@@ -84,7 +84,7 @@ def find_new(new_configs, found_already, comp_dict):
     return(next_up)
 
 def build_component(vertex):
-    found = []
+    found = [vertex]
     on_deck = [vertex]
     comp_dict = {}
     while True:
@@ -93,27 +93,28 @@ def build_component(vertex):
             break
     return(comp_dict)
 
-def find_new_idx(new_configs, found_already, comp_dict):
-    next_up = []
-    for config in new_configs:
-        my_pals = find_neighbors(config, board)
-        comp_dict[config] = my_pals
+def find_new_idx(num_new, found_already):
+    num_found = 0
+    for idx in range(-num_new, 0):
+        my_pals = find_neighbors(found_already[idx], board)
         for pal in my_pals:
             if not (pal in found_already):
-                next_up.append(pal)
+                num_found += 1
                 found_already.append(pal)
-    return(next_up)
+    return(num_found)
 
 def build_component_idx(vertex):
-    found = []
-    on_deck = [vertex]
-    comp_dict = {}
+    found = [vertex]
+    num_to_check = 1
     while True:
-        on_deck = find_new(on_deck, found, comp_dict)
-        if on_deck == []:
+        print("number found this round: ", num_to_check, "\n")
+        print("found so far: ", found, "\n")
+        num_to_check = find_new_idx(num_to_check, found)
+        if num_to_check == 0:
             break
-    return(comp_dict)  
-    
+    return(found)
+
+
                 
                 
             
