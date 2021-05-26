@@ -87,12 +87,32 @@ def build_component(vertex):
     found = []
     on_deck = [vertex]
     comp_dict = {}
-    n = 0
-    while n < 10:
+    while True:
         on_deck = find_new(on_deck, found, comp_dict)
         if on_deck == []:
             break
     return(comp_dict)
+
+def find_new_idx(new_configs, found_already, comp_dict):
+    next_up = []
+    for config in new_configs:
+        my_pals = find_neighbors(config, board)
+        comp_dict[config] = my_pals
+        for pal in my_pals:
+            if not (pal in found_already):
+                next_up.append(pal)
+                found_already.append(pal)
+    return(next_up)
+
+def build_component_idx(vertex):
+    found = []
+    on_deck = [vertex]
+    comp_dict = {}
+    while True:
+        on_deck = find_new(on_deck, found, comp_dict)
+        if on_deck == []:
+            break
+    return(comp_dict)  
     
                 
                 
