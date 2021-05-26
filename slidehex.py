@@ -97,7 +97,9 @@ n=len(board) # Board is represented by list, entries are centers of tiles
 P=tuple(set(permutations(tuple(range(1,n-k+1))+tuple(0 for col in range(k)))))
 CS=dict.fromkeys(P) # Create dictionary indexed by configurations
 
-# Set two integer flags which start 
+# Set two integer flags which record whether we have found neighbors
+# of configuration, and whether that configuration has been assigned
+# to a component
 for k in CS:
     CS[k]=[0,0]
 
@@ -163,9 +165,5 @@ for i in range(c-1):
     file.write("\n")
 file.close()
 
-##ajustar para:
-##quitar los vertices aislados
-##remover las banderas de cada llave
-##cambiar los valores asociados a cada llave para que sean tuplas YA
 
 
