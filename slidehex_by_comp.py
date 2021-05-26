@@ -72,6 +72,9 @@ board=((0,0),(0,1),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5))
 
 n=len(board) # Board is represented by list, entries are centers of tiles
 
+## Todo: COMMENT THIS CODE!
+## Create script to format output nicely
+
 def find_new(new_configs, found_already, comp_dict):
     next_up = []
     for config in new_configs:
@@ -93,26 +96,29 @@ def build_component(vertex):
             break
     return(comp_dict)
 
-def find_new_idx(num_new, found_already):
+def find_new_idx(num_new, found_already, comp_dict):
     num_found = 0
+    my_len = len(found_already)
     for idx in range(-num_new, 0):
         my_pals = find_neighbors(found_already[idx], board)
         for pal in my_pals:
             if not (pal in found_already):
                 num_found += 1
                 found_already.append(pal)
+        comp_dict[my_len + idx] = [found_already.index(pal) for pal in my_pals]
     return(num_found)
 
 def build_component_idx(vertex):
     found = [vertex]
     num_to_check = 1
+    comp_dict = {}
     while True:
         print("number found this round: ", num_to_check, "\n")
         print("found so far: ", found, "\n")
-        num_to_check = find_new_idx(num_to_check, found)
+        num_to_check = find_new_idx(num_to_check, found, comp_dict)
         if num_to_check == 0:
             break
-    return(found)
+    return(found, comp_dict)
 
 
                 
