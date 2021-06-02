@@ -17,7 +17,6 @@ def find_neighbors(configt,board):
     config=list(configt)  # convert from tuple to list--may not be needed    
     n=len(board) 
     zeros=[i for i in range(n) if config[i]==0] # list of holes on board
-    
     # Iterate over tiles on the board.
     # Check for pairs of neighboring holes next to tile.
     # Perform both possible slides of tile into pairs of neighboring holes
@@ -40,16 +39,18 @@ def find_neighbors(configt,board):
                     if sqrt((board[h[z]][0]-board[h[zz+z+1]][0])**2 + (board[h[z]][1]-board[h[zz+z+1]][1])**2)<=1:
                         # For each pair of adjacent holes, perform both
                         # possible slides of current tile into the holes
-                        A=[config[col] for col in range(n)] 
-                        B=[config[col] for col in range(n)]
+                        A=[config[col] for col in range(n)]
                         A[i]=0 # Current tile becomes hole after slide
-                        B[i]=0 # Current tile becomes hole
                         A[h[z]]=config[i] # Current tile into first hole
+                        B=[config[col] for col in range(n)]
+                        B[i]=0 # Current tile becomes hole
                         B[h[zz+z+1]]=config[i] # Current tile into second hole
                         # Add both new configurations to list of neighbors
                         # of our configuration configt
-                        neighbors.append(tuple(A)) 
-                        neighbors.append(tuple(B))
+                        if not (tuple(A) in neighbors):
+                            neighbors.append(tuple(A))
+                        if not (tuple(B) in neighbors):
+                            neighbors.append(tuple(B))
     return neighbors
 
 
@@ -136,6 +137,7 @@ def build_component(vertex, board):
         # Update the list found and the dictionary comp_dict.
         # Replace on_deck with the list of new configurations found.
         on_deck = find_new(on_deck, found, comp_dict, board)
+        print("added "+str(len(on_deck))+" new configurations!")
         # If no new configurations were found,
         # the connected component has been exahusted
         # and the loop ends.
@@ -219,9 +221,10 @@ def build_component_idx(vertex, board):
         # Call find_new_idx to find neighbors of the last
         # num_to_check configurations in the list found.
         # Add any previously unknown configurations to the list found
-        # and add entries for thethe dictionary comp_dict.
+        # and add entries to the dictionary comp_dict.
         # Replace num_to_check with the number of new configurations found.
         num_to_check = find_new_idx(num_to_check, found, comp_dict, board)
+        print("added "+str(num_to_check)+ " new configurations!")
         # If no new configurations were found,
         # the connected component has been exahusted
         # and the loop ends.
