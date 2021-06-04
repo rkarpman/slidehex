@@ -21,7 +21,6 @@ def find_neighbors(configt,board):
     # Check for pairs of neighboring holes next to tile.
     # Perform both possible slides of tile into pairs of neighboring holes
     # Add resulting configurations to list of neighbors of configt.
-    # Note: why not iterate over zeros instead? More efficient?
     for i in range(n): # iterate over tile positions
         if config[i]!=0: # check that tile is not a hole
             h=[]  # This will be list of zeros which neighbor the current tile
@@ -35,10 +34,10 @@ def find_neighbors(configt,board):
             # Add resulting new configurations to list of neighbors of tile
             for z in range(len(h)): 
                 for zz in range(len(h)-z-1):
-                    # Check if pair of holes neighboring our tile are adjacent
+                    #Check if pair of holes neighboring our tile are adjacent
                     if sqrt((board[h[z]][0]-board[h[zz+z+1]][0])**2 + (board[h[z]][1]-board[h[zz+z+1]][1])**2)<=1:
-                        # For each pair of adjacent holes, perform both
-                        # possible slides of current tile into the holes
+                        #For each pair of adjacent holes, perform both
+                        #possible slides of current tile into the holes
                         A=[config[col] for col in range(n)]
                         A[i]=0 # Current tile becomes hole after slide
                         A[h[z]]=config[i] # Current tile into first hole
@@ -61,6 +60,9 @@ para2by2=((0,0),(0,1),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5))
 #3x3 paralelogram
 para3by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),2.5),(-sqrt(3),1),(-sqrt(3),2),(-sqrt(3),3))
 
+#2x3 parallelogram
+para2by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),2.5))
+
 #Side 1 hexagon
 hexa7=((0,0),(1,0),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
 
@@ -68,7 +70,7 @@ hexa7=((0,0),(1,0),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(0,
 #board=((-1,sqrt(3)),(0,sqrt(3)),(1,sqrt(3)),(-1.5,1.5/sqrt(3)),(-0.5,1.5/sqrt(3)),(0.5,1.5/sqrt(3)),(1.5,1.5/sqrt(3)),(-2,0),(-1,0),(0,0),(1,0),(2,0),(-1.5,-1.5/sqrt(3)),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(-1,-sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
 
 #4x4 paralelogram
-#board=((0,0),(1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),(2,-sqrt(3)),(3,-sqrt(3)),(4,-sqrt(3)),(1.5,-4.5/sqrt(3)),(2.5,-4.5/sqrt(3)),(3.5,-4.5/sqrt(3)),(4.5,-4.5/sqrt(3)))
+para4by4=((0,0),(1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),(2,-sqrt(3)),(3,-sqrt(3)),(4,-sqrt(3)),(1.5,-4.5/sqrt(3)),(2.5,-4.5/sqrt(3)),(3.5,-4.5/sqrt(3)),(4.5,-4.5/sqrt(3)))
 
 
 def gen_starter(holes, tiles):
@@ -183,7 +185,7 @@ def find_new_idx(num_new, found_already, comp_dict, board):
     # Iterate over last num_new configurations in original list found_already.
     for idx in indices:
         # Find neighbors each new configuration
-        my_pals = find_neighbors(found_already[idx], board)
+        my_pals = find_neighbors_simple(found_already[idx], board)
         for pal in my_pals:
             # Check if each neighbor of the current configuration
             # has been previously found.
@@ -266,8 +268,59 @@ def write_component_idx(holes, board, file_name):
     for idx in comp_dict:
         file.write(str(idx)+": "+str(comp_dict[idx])+"\n")
     file.close()
-        
+
+def slide_tile(tile, hole, configt):
+    """
+    Given the position of a labeled tile and a hole, switch them.
+    Does no checking to make sure the switch is valid.
+    """
+    switched = list(configt) # List representing a configuration of the board
+    switched[hole] = configt[tile]
+    switched[tile] = 0
+    return tuple(switched) # Return a tuple
     
+def check_distance(pos1, pos2, board):
+    """
+    Given two positions on the board, determines if they are neighbors
+    by checking distance between centers of corresponding
+    tiles on the board.
+    """
+    xdiff = board[pos1][0]-board[pos2][0]
+    ydiff = board[pos1][1]-board[pos2][1]
+    dist = sqrt(xdiff**2 + ydiff**2)
+    answer = (dist <= 1.5) and (dist >= 0.5)
+    return answer
+
+def find_neighbors_simple(config_tuple,board):
+    """
+    Return a list containing all neighbors of a sliding-puzzle configuration.
+    
+    Keyword arguments:
+    configt -- tuple representing a configuration of the board
+    board -- list representing a hex board by coordinates of centers of hexes
+    
+    This function uses the functions check_distance and slide_tile defined above.
+    """
+    neighbors = []
+    config=list(config_tuple)
+    positions=len(board)
+    holes=[pos for pos in range(positions) if config[pos]==0] # positions holes
+    tiles=[pos for pos in range(positions) if config[pos]!= 0] # positions of tiles
+    for tile in tiles:
+            # Create list of zeros neighoring current tile
+            adj_holes=[pos for pos in holes if check_distance(tile, pos, board)]
+            to_slide = [] # List of holes tile can be slid into
+            for pos1 in adj_holes:
+                # If there is another hole adjacent to both pos1 and
+                # the current tile, we can slide the current tile
+                # into the hole at pos1.
+                for pos2 in adj_holes:
+                    if check_distance(pos1, pos2, board):
+                        to_slide.append(pos1)
+                        break
+            for hole in to_slide:
+                neighbors.append(slide_tile(tile, hole, config))
+    return neighbors   
                 
             
  
