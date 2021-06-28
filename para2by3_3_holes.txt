@@ -1,0 +1,45 @@
+We found a sample component with 20 configurations 
+
+configurations found:
+Configuration 0: (0, 0, 0, 1, 2, 3)
+Configuration 1: (1, 0, 0, 0, 2, 3)
+Configuration 2: (0, 1, 0, 0, 2, 3)
+Configuration 3: (0, 2, 0, 1, 0, 3)
+Configuration 4: (0, 0, 2, 1, 0, 3)
+Configuration 5: (1, 2, 0, 0, 0, 3)
+Configuration 6: (1, 0, 2, 0, 0, 3)
+Configuration 7: (1, 0, 0, 2, 0, 3)
+Configuration 8: (0, 2, 3, 1, 0, 0)
+Configuration 9: (0, 2, 0, 1, 3, 0)
+Configuration 10: (0, 1, 2, 0, 0, 3)
+Configuration 11: (0, 0, 2, 0, 1, 3)
+Configuration 12: (1, 2, 3, 0, 0, 0)
+Configuration 13: (1, 2, 0, 0, 3, 0)
+Configuration 14: (1, 0, 3, 2, 0, 0)
+Configuration 15: (1, 0, 0, 2, 3, 0)
+Configuration 16: (1, 0, 3, 0, 2, 0)
+Configuration 17: (1, 3, 0, 2, 0, 0)
+Configuration 18: (0, 1, 3, 0, 2, 0)
+Configuration 19: (0, 0, 3, 1, 2, 0)
+
+Relations in the graph:
+0: [1, 2, 3, 4]
+1: [2, 0, 5, 6, 7]
+2: [1, 0]
+3: [4, 0, 8, 9]
+4: [3, 0, 6, 10, 11]
+5: [6, 7, 1, 12, 13]
+6: [10, 4, 5, 1]
+7: [5, 1, 14, 15]
+8: [9, 3]
+9: [8, 3]
+10: [6, 4, 11]
+11: [10, 4]
+12: [14, 16, 13, 5]
+13: [12, 5]
+14: [17, 15, 7, 12, 16]
+15: [17, 14, 7]
+16: [18, 19, 12, 14]
+17: [14, 15]
+18: [16, 19]
+19: [16, 18]
