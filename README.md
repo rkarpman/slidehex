@@ -17,7 +17,7 @@ The *puzzle graph* of a sliding puzzle is a graph whose vertices are configurati
 
 ## Acknowledgements
 
-Erika Roldan rreceived funding from the European Union’s Horizon 2020 
+Erika Roldan received funding from the European Union’s Horizon 2020 
 research and innovation program under the Marie Skłodowska-Curie grant agreement No. 754462.
 
 ## Citations
