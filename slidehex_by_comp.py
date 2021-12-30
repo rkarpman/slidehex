@@ -63,7 +63,6 @@ para3by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),
 #3x3 triangle
 tri3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-sqrt(3),1))
 
-
 #2x3 parallelogram
 para2by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),2.5))
 
@@ -71,7 +70,15 @@ para2by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),
 hexa7=((0,0),(1,0),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
 
 #Side 2 hexagon
-#board=((-1,sqrt(3)),(0,sqrt(3)),(1,sqrt(3)),(-1.5,1.5/sqrt(3)),(-0.5,1.5/sqrt(3)),(0.5,1.5/sqrt(3)),(1.5,1.5/sqrt(3)),(-2,0),(-1,0),(0,0),(1,0),(2,0),(-1.5,-1.5/sqrt(3)),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(-1,-sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
+hexa19=((-1,sqrt(3)),(0,sqrt(3)),(1,sqrt(3)),(-1.5,1.5/sqrt(3)),(-0.5,1.5/sqrt(3)),(0.5,1.5/sqrt(3)),(1.5,1.5/sqrt(3)),(-2,0),(-1,0),(0,0),(1,0),(2,0),(-1.5,-1.5/sqrt(3)),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(-1,-sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
+
+#Paralellogram with ends cut off
+tester = ((1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),
+ (2,-sqrt(3)),(3,-sqrt(3)),(4,-sqrt(3)),(1.5,-4.5/sqrt(3)),(2.5,-4.5/sqrt(3)),(3.5,-4.5/sqrt(3)))
+
+#small_tester is a 3 by 4 parallelgram with ends cut off
+small_tester = ((1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),
+ (2,-sqrt(3)),(3,-sqrt(3)))
 
 #4x4 triangle
 tri4=((0,0),(1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(1,-sqrt(3)),(2,-sqrt(3)),(1.5,-4.5/sqrt(3)))
@@ -242,10 +249,74 @@ def build_component_idx(vertex, board):
         # the connected component has been exahusted
         # and the loop ends.
         if num_to_check == 0:
-            break
+            break 
     return(found, comp_dict)
 
-def write_component_idx(holes, board, file_name):
+def build_component_idx(vertex, board):
+    """
+    Returns a pair whose first element is a list found 
+    of all configurations in the connected component of vertex
+    in the configuration space of sliding puzzles, 
+    and whose second element is a dictionary recording 
+    adjacency relations in that connected component.
+    Keys in the dictionary are integers. The value corresponding to each key
+    is a list of integers, which give the indices in found
+    of all neighbors of the configuration indexed by the key.
+    Uses the function find_new_idx.
+
+    Keyword arguments:
+    vertex--tuple representing a starting configuration.
+    board--board--tuple of pairs representing centers of tiles on board.
+    """
+    found = [vertex] # List of configurations found so far.
+    num_to_check = 1 # Number of configurations whose neighbors must be found.
+    comp_dict = {} # Records adjacencies in the configuration space.
+    while True:
+        # Call find_new_idx to find neighbors of the last
+        # num_to_check configurations in the list found.
+        # Add any previously unknown configurations to the list found
+        # and add entries to the dictionary comp_dict.
+        # Replace num_to_check with the number of new configurations found.
+        num_to_check = find_new_idx(num_to_check, found, comp_dict, board)
+        print("added "+str(num_to_check)+ " new configurations!")
+        # If no new configurations were found,
+        # the connected component has been exahusted
+        # and the loop ends.
+        if num_to_check == 0:
+            break 
+    return(found, comp_dict)
+
+def depth_of_tree(vertex, board):
+    """
+    Returns the depth of the tree found when doing a breadth-first search
+    for configurations of a given board shape.
+    Uses the function find_new_idx.
+
+    Keyword arguments:
+    vertex--tuple representing a starting configuration.
+    board--board--tuple of pairs representing centers of tiles on board.
+    """
+    found = [vertex] # List of configurations found so far.
+    num_to_check = 1 # Number of configurations whose neighbors must be found.
+    stages = 0 # How many steps from the starting point have been calculated?
+    comp_dict = {} # Records adjacencies in the configuration space.
+    while True:
+        # Call find_new_idx to find neighbors of the last
+        # num_to_check configurations in the list found.
+        # Add any previously unknown configurations to the list found
+        # and add entries to the dictionary comp_dict.
+        # Replace num_to_check with the number of new configurations found.
+        num_to_check = find_new_idx(num_to_check, found, comp_dict, board)
+        print("added "+str(num_to_check)+ " new configurations!")
+        # If no new configurations were found,
+        # the connected component has been exahusted
+        # and the loop ends.
+        if num_to_check == 0:
+            break
+        stages += 1
+    return(stages)
+
+def write_component_idx(holes, board, board_name, file_name):
     """
     Given a board and number of holes, finds a connected component
     in the configuration space of sliding puzzles.
@@ -268,6 +339,8 @@ def write_component_idx(holes, board, file_name):
     c = len(configs_found) 
     comp_dict=result[1] # Dictionary of adjacency relations.
     file = open(file_name, "w+")
+    file.write("Board: " + board_name + '\n')
+    file.write("holes: " + str(holes) + '\n')
     file.write("We found a sample component with %d configurations \n\n" %c)
     file.write("configurations found:\n")
     place = 0 # Number the entries in the list of configurations
@@ -279,6 +352,41 @@ def write_component_idx(holes, board, file_name):
     for idx in comp_dict:
         file.write(str(idx)+": "+str(comp_dict[idx])+"\n")
     file.close()
+
+def write_from_vert(vert, board, file_name):
+    """
+    Given a board and number of holes, finds a connected component
+    in the configuration space of sliding puzzles.
+    Writes the result to a text file, formatted legibly.
+
+    Configurations are represented as tuples, with entries
+    corresponding to positions on the board.
+    Adjacencies are represented by a dictionary.
+    Each key, value pair encodes a configuration
+    and a list of its neighbors.
+    Configurations in this dictionary are represented by integers
+    which indicate their position in the list of all configurations found.
+
+    Uses the function build_component_idx to build the component.
+    """
+    result = build_component_idx(vert, board) # Build the connected component.
+    configs_found=result[0] # List of configurations in connected component.
+    c = len(configs_found) 
+    comp_dict=result[1] # Dictionary of adjacency relations.
+    file = open(file_name, "w+")
+    file.write("We found a sample component with %d configurations \n\n" %c)
+    file.write("configurations found:\n")
+    place = 0 # Number the entries in the list of configurations
+    for config in configs_found:
+        file.write("Configuration "+str(place)+": "+str(config)+"\n")
+        place += 1
+    file.write("\n")
+    file.write("Relations in the graph:\n")
+    for idx in comp_dict:
+        file.write(str(idx)+": "+str(comp_dict[idx])+"\n")
+    file.close()
+
+
 
 def slide_tile(tile, hole, configt):
     """
@@ -332,8 +440,19 @@ def find_neighbors_simple(config_tuple,board):
             for hole in to_slide:
                 neighbors.append(slide_tile(tile, hole, config))
     return neighbors   
-                
-            
+
+def trace_path_back(vertex, found, comp_dict):
+    """
+    Find a path from one configuration to another
+    in a spanning tree computed using our breadth-first search algorithm.
+    """
+    idx = found.index(vertex)
+    path = []
+    while idx > 0:
+        path.append(idx)
+        idx = min(comp_dict[idx])
+    return path
+        
  
 
 
