@@ -303,7 +303,7 @@ def write_component_idx(holes, board, board_name, file_name):
     c = len(configs_found) 
     comp_dict=result[1] # Dictionary of adjacency relations.
     file = open(file_name, "w+")
-    file.write("Board: " + board_name + '\n')
+    file.write("board: " + board_name + '\n')
     file.write("holes: " + str(holes) + '\n')
     file.write("We found a sample component with %d configurations \n\n" %c)
     file.write("configurations found:\n")
