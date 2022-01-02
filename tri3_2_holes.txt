@@ -1,4 +1,4 @@
-Board: 3 x 3 triangle 
+board: 3 x 3 triangle 
 holes: 2 
 We found a sample component with 9 configurations 
 

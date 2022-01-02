@@ -1,3 +1,5 @@
+board: flower with 2 layers
+holes: 3
 We found a sample component with 132 configurations 
 
 configurations found:
