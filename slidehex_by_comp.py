@@ -53,8 +53,7 @@ def find_neighbors(configt,board):
     return neighbors
 
 
-#number of holes
-k=2
+#2x2 parallelogram
 para2by2=((0,0),(0,1),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5))
 
 #3x3 paralelogram
@@ -66,17 +65,17 @@ tri3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-sqrt(3),1))
 #2x3 parallelogram
 para2by3=((0,0),(0,1),(0,2),(-1.5/sqrt(3),0.5),(-1.5/sqrt(3),1.5),(-1.5/sqrt(3),2.5))
 
-#Side 1 hexagon
+#Flower with 2 layers
 hexa7=((0,0),(1,0),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
 
-#Side 2 hexagon
+#Flower with 3 layers 
 hexa19=((-1,sqrt(3)),(0,sqrt(3)),(1,sqrt(3)),(-1.5,1.5/sqrt(3)),(-0.5,1.5/sqrt(3)),(0.5,1.5/sqrt(3)),(1.5,1.5/sqrt(3)),(-2,0),(-1,0),(0,0),(1,0),(2,0),(-1.5,-1.5/sqrt(3)),(-0.5,-1.5/sqrt(3)),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(-1,-sqrt(3)),(0,-sqrt(3)),(1,-sqrt(3)))
 
-#Paralellogram with ends cut off
+#tester is a trimmed 4 by 4 parallelogram
 tester = ((1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),
  (2,-sqrt(3)),(3,-sqrt(3)),(4,-sqrt(3)),(1.5,-4.5/sqrt(3)),(2.5,-4.5/sqrt(3)),(3.5,-4.5/sqrt(3)))
 
-#small_tester is a 3 by 4 parallelgram with ends cut off
+#small_tester is a trimmed 3 by 4 parallelgram
 small_tester = ((1,0),(2,0),(3,0),(0.5,-1.5/sqrt(3)),(1.5,-1.5/sqrt(3)),(2.5,-1.5/sqrt(3)),(3.5,-1.5/sqrt(3)),(1,-sqrt(3)),
  (2,-sqrt(3)),(3,-sqrt(3)))
 
@@ -97,7 +96,6 @@ def gen_starter(holes, tiles):
     where the number of 0's is given by the parameter holes.
     """
     return(tuple([0 for hole in range(holes)]+list(range(1, tiles+1-holes))))
-
     
 def find_new(new_configs, found_already, comp_dict, board):
     """
@@ -252,40 +250,6 @@ def build_component_idx(vertex, board):
             break 
     return(found, comp_dict)
 
-def build_component_idx(vertex, board):
-    """
-    Returns a pair whose first element is a list found 
-    of all configurations in the connected component of vertex
-    in the configuration space of sliding puzzles, 
-    and whose second element is a dictionary recording 
-    adjacency relations in that connected component.
-    Keys in the dictionary are integers. The value corresponding to each key
-    is a list of integers, which give the indices in found
-    of all neighbors of the configuration indexed by the key.
-    Uses the function find_new_idx.
-
-    Keyword arguments:
-    vertex--tuple representing a starting configuration.
-    board--board--tuple of pairs representing centers of tiles on board.
-    """
-    found = [vertex] # List of configurations found so far.
-    num_to_check = 1 # Number of configurations whose neighbors must be found.
-    comp_dict = {} # Records adjacencies in the configuration space.
-    while True:
-        # Call find_new_idx to find neighbors of the last
-        # num_to_check configurations in the list found.
-        # Add any previously unknown configurations to the list found
-        # and add entries to the dictionary comp_dict.
-        # Replace num_to_check with the number of new configurations found.
-        num_to_check = find_new_idx(num_to_check, found, comp_dict, board)
-        print("added "+str(num_to_check)+ " new configurations!")
-        # If no new configurations were found,
-        # the connected component has been exahusted
-        # and the loop ends.
-        if num_to_check == 0:
-            break 
-    return(found, comp_dict)
-
 def depth_of_tree(vertex, board):
     """
     Returns the depth of the tree found when doing a breadth-first search
@@ -385,7 +349,6 @@ def write_from_vert(vert, board, file_name):
     for idx in comp_dict:
         file.write(str(idx)+": "+str(comp_dict[idx])+"\n")
     file.close()
-
 
 
 def slide_tile(tile, hole, configt):
