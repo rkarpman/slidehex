@@ -2,8 +2,10 @@
 
 DEVELOPERS:
 
-Ray Karpman (karpman1@otterbein.edu)  
+Ray Karpman (karpman1@otterbein.edu) 
+https://sites.google.com/view/rachel-karpman/
 Erika Roldan (erika.roldan@ma.tum.de)
+https://www.erikaroldan.net/
 
 
 *** The 3D models for printing the sliding puzzles that are contained in the zip file repuzzle were kindly developed by Henry Segerman https://math.okstate.edu/people/segerman/
