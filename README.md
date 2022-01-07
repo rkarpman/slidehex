@@ -4,6 +4,7 @@ DEVELOPERS:
 
 Ray Karpman (karpman1@otterbein.edu) 
 https://sites.google.com/view/rachel-karpman/
+
 Erika Roldan (erika.roldan@ma.tum.de)
 https://www.erikaroldan.net/
 
