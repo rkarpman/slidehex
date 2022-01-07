@@ -5,6 +5,9 @@ DEVELOPERS:
 Ray Karpman (karpman1@otterbein.edu)  
 Erika Roldan (erika.roldan@ma.tum.de)
 
+
+*** The 3D models for printing the sliding puzzles that are contained in the zip file repuzzle were kindly developed by Henry Segerman https://math.okstate.edu/people/segerman/
+
 DATE: January 3, 2022
 
 LICENSE: GNU GENERAL PUBLIC LICENSE (see license.txt)
